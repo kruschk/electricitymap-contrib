@@ -7,13 +7,6 @@ const fs = require('fs');
 const http = require('http');
 const auth = require('basic-auth');
 const version = require('./version.js');
-
-// Custom module
-const {
-  getSingleTranslationStatusJSON,
-  getTranslationStatusJSON,
-  getTranslationStatusSVG,
-} = require(`${__dirname}/translation-status`);
 const {
   localeToFacebookLocale,
   supportedFacebookLocales,
@@ -71,14 +64,6 @@ const manifest = JSON.parse(fs.readFileSync(`${STATIC_PATH}/dist/manifest.json`)
 
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 app.get('/clientVersion', (req, res) => res.json({version}));
-
-// Translation status
-app.get('/translationstatus/badges.svg', (req, res) => {
-  res.set('Content-Type', 'image/svg+xml;charset=utf-8');
-  res.end(getTranslationStatusSVG(locales));
-});
-app.get('/translationstatus', (req, res) => res.json(getTranslationStatusJSON(locales)));
-app.get('/translationstatus/:language', (req, res) => res.json(getSingleTranslationStatusJSON(req.params.language)));
 
 // API
 app.get('/v1/*', (req, res) => res.redirect(301, `https://api.electricitymap.org${req.originalUrl}`));
